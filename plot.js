@@ -10,14 +10,23 @@ d3.json(url).then(function(data){
 });
 
 function plotter (data) {
-    let xvals = data.sample_values.slice(0,10);
-    let yvals = data.otu_ids.slice(0,10);
+    let xvals = data.sample_values;
+    let yvals = data.otu_ids;
+    console.log(yvals);
     yvals.reverse();
+    xvals.sort((a,b)=> b-a);
+    console.log(yvals);
+    xvals = xvals.slice(0,10);
+    yvals = yvals.slice(0,10);
+    console.log(yvals);
+    xvals.reverse();
+    yvals.reverse();
+    console.log(yvals);
     let new_yvals = [];
     for (val of yvals) {
         new_yvals.push(`OTU ${val}`); 
     }
-    xvals.reverse();
+    yvals.reverse();
     let trace1 = {
         x: xvals,
         y: new_yvals,
@@ -43,49 +52,64 @@ function plotter (data) {
     };
     traceData = [trace1];
     traceData2 = [trace2];
-    console.log(trace1.x);
-    console.log(trace1.y);
-    layout = {
-        title: 'Top 10 Sample Values',
-        // grid: {rows: 1, columns: 2, pattern: 'independent', roworder: 'bottom to top'}
+    layout1 = {
+      title: 'Top 10 Sample Values',
     };
-
-    Plotly.newPlot('bar', traceData, layout);
-    Plotly.newPlot('bubble', traceData2, layout);
-
+    layout2 = {
+      title: 'Bubble Plot showing relative amounts of bacteria'
+    };
+    Plotly.newPlot('bar', traceData, layout1);
+    Plotly.newPlot('bubble', traceData2, layout2);
 }
 
 function demoInfo(data2) {
         var keys = Object.keys(data2);
         var values = Object.values(data2);
         var ol = document.getElementById('metalist');
-        // ol.createElement('ol');
+        var listy = document.getElementById('metalist');
+        listy.innerHTML = '';
         for (let i = 0; i < keys.length; i++) {
             let li = document.createElement('li');
             li.innerText=`${keys[i]}: ${values[i]}`;
             ol.appendChild(li);
         }
-        // document.getElementById('sample-metadata').appendChild(ol);
+        var traceData3 = [
+            {
+              type: "indicator",
+              mode: "number+gauge",
+              value: data2.wfreq,
+              title: { text: "Wash Frequency", font: { size: 24 } },
+              gauge: {
+                axis: { range: [0, 9], tickwidth: 1, tickcolor: "darkblue", tickmode:'array', tickvals:[1,2,3,4,5,6,7,8] },
+                bar: { color: "darkblue" },
+                bgcolor: "white",
+                borderwidth: 2,
+                bordercolor: "gray",
+                steps: [
+                  { range: [0, 1], color: '#f7fcfd' },
+                  { range: [1, 2], color: "#e5f5f9" },
+                  { range: [2, 3], color: '#ccece6' },
+                  { range: [3, 4], color: '#99d8c9' },
+                  { range: [4, 5], color: '#66c2a4' },
+                  { range: [5, 6], color: '#41ae76' },
+                  { range: [6, 7], color: '#238b45' },
+                  { range: [7, 8], color: '#006d2c' },
+                  { range: [8, 9], color: '#00441b' }
+                ],
+                threshold: {
+                  line: { color: "red", width: 4 },
+                  thickness: 0.75,
+                  value: data2.wfreq
+                },
+                text: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9'] 
+              }
+            }
+          ];
+          let layout= {
+            font: {color:'blue'},
+            ids: ['0-1','1-2','2-3','3-4','4-5','5-6','6-7','7-8','8-9']
+          };
+        Plotly.newPlot('gauge', traceData3, layout);
     };
 
-// Create the HTML list var ol = document.createElement("ol");
-// Loop through the array and append list items for (let i of ARRAY) { let li = document.createElement("li"); li.innerHTML = i; ol.appendChild(li); }
-// Append the list to where you want document.getElementById("TARGET").appendChild(ol);
 
-
-
-// let trace1 = {
-//     x: trial.map(x => x.sample_values),
-//     y: trial.map(x => x.otu_ids),
-//     text: 'Samples',
-//     type: 'bar',
-//     orientation: 'h'
-// };
-
-// traceData = [trace1];
-
-// layout = {
-//     title: 'Top 10 Sample Values'
-// };
-
-// Plotly.newPlot('plot', traceData, layout);
