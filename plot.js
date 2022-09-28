@@ -12,16 +12,12 @@ d3.json(url).then(function(data){
 function plotter (data) {
     let xvals = data.sample_values;
     let yvals = data.otu_ids;
-    console.log(yvals);
     yvals.reverse();
     xvals.sort((a,b)=> b-a);
-    console.log(yvals);
     xvals = xvals.slice(0,10);
     yvals = yvals.slice(0,10);
-    console.log(yvals);
     xvals.reverse();
     yvals.reverse();
-    console.log(yvals);
     let new_yvals = [];
     for (val of yvals) {
         new_yvals.push(`OTU ${val}`); 
