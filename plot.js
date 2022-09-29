@@ -12,6 +12,13 @@ d3.json(url).then(function(data){
 function plotter (data) {
     let xvals = data.sample_values;
     let yvals = data.otu_ids;
+    let labels = data.otu_labels;
+    var newLabels = [];
+    for (let i = 0; i < 10; i++){
+      startPoint = labels.length -1;
+      newLabels.push(labels[startPoint- i]);
+    }
+    newLabels.reverse();
     yvals.reverse();
     xvals.sort((a,b)=> b-a);
     xvals = xvals.slice(0,10);
@@ -26,7 +33,7 @@ function plotter (data) {
     let trace1 = {
         x: xvals,
         y: new_yvals,
-        text: 'Samples',
+        text: newLabels,
         type: 'bar',
         orientation: 'h'
     };
